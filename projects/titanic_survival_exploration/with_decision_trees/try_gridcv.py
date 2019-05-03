@@ -20,6 +20,8 @@ def fit_model(X, y):
         decision tree regressor trained on the input data [X, y]. """
     
     # Create cross-validation sets from the training data
+    # TODO: Change the number of splits? 5, 10, 15 for example
+    # TODO: Maybe try sklearn.model_selection.StratifiedKFold instead of shufflesplit?
     cv_sets = ShuffleSplit(n_splits = 10, test_size = 0.20, random_state = 0)
 
     #Create a decision tree classifier object
@@ -36,7 +38,8 @@ def fit_model(X, y):
     # Make sure to include the right parameters in the object:
     # (estimator, param_grid, scoring, cv) which have values 'regressor', 'params', 'scoring_fnc', and 'cv_sets' respectively.
     # NOTE: Helpful link let me know that cv=cv_sets was necessary -- https://gist.github.com/mariogintili/7d98f1f3efc3bc4cd4e0dea160bcdb72
-    grid = GridSearchCV(classifier, params, scoring_fnc, cv=cv_sets)
+    #grid = GridSearchCV(classifier, params, scoring_fnc, cv=cv_sets)
+    grid = GridSearchCV(classifier, params, scoring_fnc, cv=cv_sets, verbose=10)
 
     # Fit the grid search object to the data to compute the optimal model
     grid = grid.fit(X, y)
@@ -54,12 +57,10 @@ print("Parameter 'min_samples_split' is {} for the optimal model.".format(reg.ge
 
 # Train the model with optimal settings
 # Attempt "4" -- Just messing around
-model4 = DecisionTreeClassifier(max_depth=3, min_samples_leaf=2, min_samples_split=5)
-model4.fit(X_train, y_train)
 
 # TODO: Make predictions
-y_train_pred_4 = model4.predict(X_train)
-y_test_pred_4 = model4.predict(X_test)
+y_train_pred_4 = reg.predict(X_train)
+y_test_pred_4 = reg.predict(X_test)
 
 # TODO: Calculate the accuracy
 train_accuracy_4 = accuracy_score(y_train, y_train_pred_4)
